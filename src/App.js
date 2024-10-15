@@ -23,7 +23,6 @@ function App() {
     <Route path='/about' element={< About/>}/> 
     <Route path='/service' element={ <Services/>}/>
     <Route path='/contact' element={ <Contact/>}/>
-
     <Route path='/cart' element={< Cart/>}/>
     <Route path='/store' element={< Store/>}/>
     <Route path='/users'element={<Dashbord />} >
