@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import Footer from "./Footer";
 
-const Base = ({ title = "Page Title", description = "Welcome to our shop", showButton=false ,buttonLink="/",buttonText=" ",children }) => {
+const Base = ({ title = "Page Title", description = "Welcome to our shop", showButton=false ,buttonLink="/",buttonText="",children }) => {
     return (
         <div className="min-h-screen flex flex-col  ">
-            <div className=" transition-transform duration-200 ease-in-out transform scale-10 mx-auto w-full bg-blue-200 py-4 px-4 border-2 hover:scale-105 border-yellow-300 rounded dark:bg-black dark:text-white shadow-lg h-40 flex flex-col justify-center items-center" >
+            <div className=" transition-transform duration-200 ease-in-out transform scale-10 mx-auto w-full bg-blue-600 py-4 px-4 border-2 hover:scale-105 border-yellow-300 rounded dark:bg-black dark:text-white shadow-lg h-40 flex flex-col justify-center items-center" >
                 <div className=" flex flex-col justify-center items-center">
                 <h3 className="text-center text-2xl font-bold py-2">{title}</h3>
                 <p className="text-center text-lg py-2">{description&& description}</p>
@@ -13,7 +13,7 @@ const Base = ({ title = "Page Title", description = "Welcome to our shop", showB
                 </div>
             
             </div>
-            <main className="flex-grow bg-slate-300 text-black dark:text-white dark:bg-slate-700">{children}</main>
+            <main className="flex-grow bg-blue-200 text-black dark:text-white dark:bg-slate-400 pt-6 pb-4">{children}</main>
             <Footer />
         </div>
     );

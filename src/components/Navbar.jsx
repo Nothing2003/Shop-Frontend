@@ -1,10 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Box,
+  Menu,
+  MenuItem,
+  
+} from '@mui/material';
+import { Brightness4, Brightness7 } from '@mui/icons-material';
+import UserContext from '../context/user.context';
 
 const CustomNavbar = () => {
   const [theme, setTheme] = useState('dark');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const userContext=useContext(UserContext)
 
   const toggleTheme = () => {
     setTheme((prevTheme) => {
@@ -23,174 +38,207 @@ const CustomNavbar = () => {
     }
   }, []);
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (!event.target.closest('#dropdownNavbarLink') && !event.target.closest('#dropdownNavbar')) {
-        setIsDropdownOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+  const handleMenuToggle = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+  const handleMenuClose = () => {
+    setIsMenuOpen(false);
+  };
+
+  const handleDropdownOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleDropdownClose = () => {
+    setAnchorEl(null);
+  };
+  const doLogout=()=>{
+    
+    userContext.logout()
+    
+  }
 
   return (
-    <div className={`app ${theme}` } >
-      <nav className="bg-blue-400 border-gray-200 dark:bg-gray-900 ">
-        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-             <img src="/images/shop.jpeg" alt="Shop Icon" className="h-12 w-12 dark:bg-white rounded-full dark:border-gray-500" />
-            <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MyShop</span>
-          </Link>
-          <button
-            data-collapse-toggle="navbar-default"
-            type="button"
-            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-            aria-controls="navbar-default"
-            aria-expanded={isMenuOpen}
-            onClick={toggleMenu} 
-          >
-            <span className="sr-only">Open main menu</span>
-            <svg
-              className="w-5 h-5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 17 14"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M1 1h15M1 7h15M1 13h15"
-              />
-            </svg>
-          </button>
+    <AppBar position="static" className="bg-blue-400 dark:bg-gray-900 flex">
+      <Toolbar>
+        <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
+          <img src="/images/shop.jpeg" alt="Shop Icon" className="h-12 w-12 dark:bg-white rounded-full" />
+          <Typography variant="h6" className="dark:text-white">
+            MyShop
+          </Typography>
+        </Link>
 
-          <div className={`${isMenuOpen ? 'block' : 'hidden'} w-full md:block md:w-auto`} id="navbar-default">
-            <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-blue-500 rounded-lg bg-blue-400 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-blue-400 dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-              <li>
-                <Link to="/" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent" aria-current="page">
-                  Home
-                </Link>
-              </li>
-              <li className="relative">
-          <button
-            id="dropdownNavbarLink"
-            onClick={toggleDropdown}
-            className="flex items-center justify-between w-full py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent"
-          >
-            Product Category
-          <svg
-          className="w-2.5 h-2.5 ms-2.5"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 10 6"
-           >
-          <path
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="m1 1 4 4 4-4"
-            />
-            </svg>
-            </button>
+        <Box sx={{ flexGrow: 1 }} />
 
-          {isDropdownOpen && (
-          <div
-            id="dropdownNavbar"
-            className="z-10 absolute font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
-          >
-          <ul className="py-2 text-sm text-gray-700 dark:text-gray-400">
-            <li>
-              <Link
-                to="/"
-                className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-              >
-                Smart TVs
-                    </Link>
-                    </li>
-                    <li>
-                      <Link
-                        to="/"
-                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      >
-                       Smart Phone
+        {/* Mobile Menu Icon */}
+        <IconButton
+          edge="end"
+          color="inherit"
+          aria-label="menu"
+          onClick={handleMenuToggle}
+          sx={{ display: { xs: 'block', md: 'none' } }} // Show only on mobile
+        >
+          {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
+        </IconButton>
+
+        {/* Desktop Menu */}
+        <Box sx={{ display: { xs: 'none', md: 'flex' }, marginLeft: 'auto' }}>
+          <Link to="/" className="text-white mx-2 hover:scale-105 dark:hover:text-blue-600 hover:text-gray-700">Home</Link>
+          <Link to="/service" className="text-white mx-2 hover:scale-105 dark:hover:text-blue-600 hover:text-gray-700">Features</Link>
+          <Link to="/about" className="text-white mx-2 hover:scale-105 dark:hover:text-blue-600 hover:text-gray-700 ">About</Link>
+          <Link to="/cart" className="text-white mx-2 hover:scale-105 dark:hover:text-blue-600 hover:text-gray-700">Cart(12)</Link>
+          <Link to="/contact" className="text-white mx-2 hover:scale-105 dark:hover:text-blue-600 hover:text-gray-700">Contact</Link>
+
+          {
+              userContext.isLogin ? (
+                // Add content for logged-in users here, like a logout button or user profile link.
+                <>
+                {
+                  userContext.isAdminUser &&(
+                    <>
+                      <Link component={Link}  to="/admin/home" className='text-white mx-2 hover:scale-105       dark:hover:text-blue-600 hover:text-gray-700'>
+                        Admin Dashboard
                       </Link>
-                    </li>
-                    <li>
-                      <Link
-                       to="/"
-                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      >
-                        Laptop
-                      </Link>
-                    </li>
-                  </ul>
-                  <div className="py-1">
-            <Link
-              to="/"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-            >
-              More
-            </Link>
-          </div>
-                </div>
-                 ) }
-              </li>
-              <li>
-                <Link to="/service" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
-                  Features
+                    </>
+                  )
+                }
+
+                <Link component={Link} to="/users/profile" onClick={handleMenuClose} className='text-white mx-2 hover:scale-105 dark:hover:text-blue-600 hover:text-gray-700'>
+                  {userContext?.userData?.user?.name}
                 </Link>
-              </li>
-              <li>
-                <Link to="/about" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
-                  About
-                </Link>
-              </li>
-              <li>
-                
-                <Link to="/cart" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
-                  Cart(12)
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
-                  Contact
-                </Link>
-              </li>
-              <li className=''>
-                <Link to="/users/profile" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
-                  Login
-                </Link>
-              </li>
-              <li className=''>
-                <Link to="/users/profile" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
-                  Signup
-                </Link>
-              </li>
-              <li>
-                <button
-                  className="text-white bg-black hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:hover:bg-blue-100 dark:focus:ring-blue-800 flex  dark:bg-white"
-                  onClick={toggleTheme}
+                 <Link component={Link}  onClick={doLogout} className='text-white mx-2 hover:scale-105 dark:hover:text-blue-600 hover:text-gray-700'>
+                 Logout
+               </Link>
+                </>
+              ) : (
+                <>
+                  <Link component={Link} to="/login" onClick={handleMenuClose} className='text-white mx-2 hover:scale-105 dark:hover:text-blue-600 hover:text-gray-700'>Login</Link>
+                  <Link component={Link} to="/register" onClick={handleMenuClose} className='text-white mx-2 hover:scale-105 dark:hover:text-blue-600 hover:text-gray-700'>Register</Link>
+                </>
+              )
+            }
+
+          {/* Dropdown Menu for Desktop */}
+          <Link onClick={handleDropdownOpen} component={Link} className='text-white mx-2 hover:scale-105  dark:hover:text-blue-600 hover:text-gray-700 flex'>
+              Product Category
+
+              <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height={20}
+                  width={25}
+                  viewBox="0 0 448 512"
+                  fill="currentColor" 
+                  className=' pt-2 pl-1'
                 >
-                    <img src={theme==='light'? '/images/light.png':'/images/dark.png'} alt="" className="h-5 w-10 mr-2 rounded" />
-                  
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-    </div>
+                  <path d="M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z" />
+                </svg>
+            </Link>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)} // Ensure open prop is a boolean
+              onClose={handleDropdownClose}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+              }}
+            >
+              <MenuItem component={Link} to="/smart-tvs" onClick={handleDropdownClose} className='hover:scale-105 dark:hover:text-blue-600'>Smart TVs</MenuItem>
+              <MenuItem component={Link} to="/smart-phones" onClick={handleDropdownClose} className='hover:scale-105 dark:hover:text-blue-600'>Smart Phones</MenuItem>
+              <MenuItem component={Link} to="/laptops" onClick={handleDropdownClose} className='hover:scale-105 dark:hover:text-blue-600'>Laptops</MenuItem>
+              <MenuItem component={Link} to="/more" onClick={handleDropdownClose} className='hover:scale-105 '>More</MenuItem>
+            </Menu>
+
+          <IconButton onClick={toggleTheme} color="inherit" className='hover:scale-110 '>
+              {theme === 'light' ? <Brightness4 /> : <Brightness7 />}
+            </IconButton>
+        </Box>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <Box
+          sx={{
+            display: { xs: 'flex', md: 'none' },
+            flexDirection: 'column',
+            position: 'absolute',
+            top: '64px', // height of AppBar
+            right: 0,
+            bgcolor: theme=== 'dark' ? 'black' : 'darkblue', // Corrected to "black"
+            boxShadow: 3,
+            zIndex: 1,
+            width: '200px',
+          }}
+          
+          >
+            <MenuItem component={Link} to="/" onClick={handleMenuClose} className=' hover:scale-105'>Home</MenuItem>
+            <MenuItem component={Link} to="/service" onClick={handleMenuClose} className=' hover:scale-105'>Features</MenuItem>
+            <MenuItem component={Link} to="/about" onClick={handleMenuClose} className=' hover:scale-105'>About</MenuItem>
+            <MenuItem component={Link} to="/cart" onClick={handleMenuClose} className=' hover:scale-105'>Cart(12)</MenuItem>
+            <MenuItem component={Link} to="/contact" onClick={handleMenuClose} className=' hover:scale-105'>Contact</MenuItem>
+            {
+              userContext.isLogin ? (
+                // Add content for logged-in users here, like a logout button or user profile link.
+                <>
+
+                {
+                  userContext.isAdminUser &&(
+                    <>
+                      <MenuItem component={Link}  to="/admin/home" className='text-white mx-2 hover:scale-105       dark:hover:text-blue-600 hover:text-gray-700'>
+                        Admin Dashboard
+                      </MenuItem>
+                    </>
+                  )
+                }
+
+
+                <MenuItem component={Link} to="/users/profile" onClick={handleMenuClose} className='hover:scale-105'>
+                  {userContext?.userData?.user?.name}
+                </MenuItem>
+                 <MenuItem component={Link}  onClick={doLogout} className='hover:scale-105'>
+                 Logout
+               </MenuItem>
+                </>
+              ) : (
+                <>
+                  <MenuItem component={Link} to="/login" onClick={handleMenuClose} className='hover:scale-105'>Login</MenuItem>
+                  <MenuItem component={Link} to="/register" onClick={handleMenuClose} className='hover:scale-105'>Register</MenuItem>
+                </>
+              )
+            }
+            {/* Dropdown for Mobile */}
+            <MenuItem  onClick={handleDropdownOpen} className='text-black flex'>
+              Product Category  
+              <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height={18}
+                  width={18}
+                  viewBox="0 0 448 512"
+                  fill="currentColor" 
+                  className='pt-1 pl-2'
+                >
+                  <path d="M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z" />
+                </svg>
+            </MenuItem>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)} // Ensure open prop is a boolean
+              onClose={handleDropdownClose}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+              }}
+            >
+              <MenuItem component={Link} to="/smart-tvs" onClick={handleDropdownClose} className='hover:scale-105'>Smart TVs</MenuItem>
+              <MenuItem component={Link} to="/smart-phones" onClick={handleDropdownClose} className='hover:scale-105'>Smart Phones</MenuItem>
+              <MenuItem component={Link} to="/laptops" onClick={handleDropdownClose} className='hover:scale-105'>Laptops</MenuItem>
+              <MenuItem component={Link} to="/more" onClick={handleDropdownClose} className='hover:scale-105'>More</MenuItem>
+            </Menu>
+
+            <IconButton onClick={toggleTheme} color="inherit" className='hover:scale-105 '>
+              {theme === 'light' ? <Brightness4 /> : <Brightness7 />}
+            </IconButton>
+          </Box>
+        )}
+      </Toolbar>
+    </AppBar>
   );
 };
 
