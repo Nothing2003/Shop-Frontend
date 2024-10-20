@@ -1,7 +1,9 @@
 import { Button, Typography } from "@mui/material";
+import UserContext from "../../context/user.context";
+import { useContext } from "react";
 
-const UserProfileView = ({ user = null }) => {
-    
+const UserProfileView = ({ user = null ,handleOpenModel}) => {
+    const  {userData,isLogin} =useContext(UserContext);
   return (
     <>
       {user && (
@@ -13,14 +15,14 @@ const UserProfileView = ({ user = null }) => {
                     (user.imageName===null)?"/images/defultProfile.jpg": user.imageName
                 } 
                 alt={user.name}
-                className="rounded-full h-40 justify-center items-center" />
+                className="rounded-full h-40 justify-center items-center transform transition-transform shadow-lg scale-100 hover:scale-105 duration-300" />
             </div>
             
           {/* User Name */}
           <Typography
             variant="h4"
             component="h1"
-            className="text-center uppercase font-bold text-2xl sm:text-3xl lg:text-4xl mb-4"
+            className="text-center uppercase font-bold text-2xl sm:text-3xl lg:text-4xl mb-4 transform transition-transform shadow-lg scale-100 hover:scale-105 duration-300"
           >
             {user.name}
           </Typography>
@@ -70,18 +72,23 @@ const UserProfileView = ({ user = null }) => {
             </div>
           </div>
           <hr className="my-4 "/>
-          <div className="flex justify-center items-center space-x-3 pt-4 pb-4 text-center ">
-                            <Button
-                                variant="contained"
-                                color="success"
-                                type="submit"
-                                
-                                className="hover:scale-105"
-                            >
-                                Update
-                            </Button>
-                            <Button variant="contained" color="warning"   className="hover:scale-105 ">Orders</Button>
-                        </div>
+         {
+          (isLogin && userData.user.userId===user.userId)?(
+            <div className="flex justify-center items-center space-x-3 pt-4 pb-4 text-center ">
+            <Button
+                variant="contained"
+                color="success"
+                type="submit"
+                onClick={handleOpenModel}
+                className="hover:scale-105"
+            >
+                Update
+            </Button>
+            <Button variant="contained" color="warning"   className="hover:scale-105 ">Orders</Button>
+          </div>
+          ):
+          ""
+         }
         </div>
       )}
     </>

@@ -16,7 +16,7 @@ const Login=()=>{
 
     })
     // error state
-    const [errorh, setError] = useState({
+    const [error, setError] = useState({
         isError: false,
         errorData: null
     });
@@ -40,7 +40,7 @@ const Login=()=>{
     //submit Form handle
     const submitForm = (e) => {
         e.preventDefault();
-        // setLoading(true); // Start loading
+      
         //cliend validation
         if(data.email===undefined||data.email.trim()===''){
 
@@ -62,7 +62,7 @@ const Login=()=>{
                 isError:false
             })
             userContext.login(data.data)
-            redirect('/users/profile')
+            redirect(`/users/profile/${data?.data?.user?.userId}`)
            
         })
         .catch((error)=>{

@@ -104,7 +104,7 @@ const CustomNavbar = () => {
                   )
                 }
 
-                <Link component={Link} to="/users/profile" onClick={handleMenuClose} className='text-white mx-2 hover:scale-105 dark:hover:text-blue-600 hover:text-gray-700'>
+                <Link component={Link} to={`/users/profile/${userContext?.userData?.user?.userId}`} onClick={handleMenuClose} className='text-white mx-2 hover:scale-105 dark:hover:text-blue-600 hover:text-gray-700'>
                   {userContext?.userData?.user?.name}
                 </Link>
                  <Link component={Link}  onClick={doLogout} className='text-white mx-2 hover:scale-105 dark:hover:text-blue-600 hover:text-gray-700'>
@@ -190,7 +190,7 @@ const CustomNavbar = () => {
                 }
 
 
-                <MenuItem component={Link} to="/users/profile" onClick={handleMenuClose} className='hover:scale-105'>
+                <MenuItem component={Link} to={`/users/profile/${userContext?.userData?.user?.userId}`} onClick={handleMenuClose} className='hover:scale-105'>
                   {userContext?.userData?.user?.name}
                 </MenuItem>
                  <MenuItem component={Link}  onClick={doLogout} className='hover:scale-105'>
